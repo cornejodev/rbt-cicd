@@ -1,0 +1,47 @@
+name: Robot Framework CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Robot Framework tests
+        uses: joonvena/robotframework-docker-action@v1.0
+        with:
+          robot_tests_dir: tests
+          robot_reports_dir: reports  # this ensures output.xml goes to /reports
+
+      - name: Upload Robot Framework reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: robot-reports
+          path: reports
+
+  summarize-report:
+    name: Generate GitHub PR Report
+    if: always()
+    needs: [run-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download test reports
+        uses: actions/download-artifact@v4
+        with:
+          name: robot-reports
+
+      - name: Generate PR Test Summary Report
+        uses: joonvena/robotframework-reporter-action@v2.4
+        with:
+          gh_access_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "rbt-cicd"
+version = "0.1.0"
+description = ""
+authors = ["edmeister <koed.dev@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.14"
+robotframework = "^7.2.2"
+robotframework-seleniumlibrary = "^6.7.1"
+robotframework-pabot = "^4.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
